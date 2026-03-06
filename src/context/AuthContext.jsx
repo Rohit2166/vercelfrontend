@@ -102,9 +102,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
 
     try {
-      console.log("Login request to:", `${API}/api/users/login`);
+      const loginUrl = `${API}/api/users/login`;
+      console.log("Login request to:", loginUrl);
       
-      const res = await fetch(`${API}/api/users/login`, {
+      const res = await fetch(loginUrl, {
 
         method: "POST",
 
@@ -119,6 +120,15 @@ export const AuthProvider = ({ children }) => {
 
       });
 
+      console.log("Login response status:", res.status);
+
+      // Handle non-JSON responses
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text();
+        console.log("Non-JSON response:", text);
+        throw new Error("Server returned an invalid response. Please check if backend is running.");
+      }
 
       const data = await res.json();
       console.log("Login response:", data);
@@ -137,8 +147,8 @@ export const AuthProvider = ({ children }) => {
       return data;
     } catch (error) {
       console.error("Login error:", error);
-      if (error.message === "Failed to fetch") {
-        throw new Error("Cannot connect to server. Please check your internet connection or ensure the backend server is running.");
+      if (error.message === "Failed to fetch" || error.name === "TypeError") {
+        throw new Error("Cannot connect to backend server. Please ensure the backend is running at " + API);
       }
       throw error;
     }
