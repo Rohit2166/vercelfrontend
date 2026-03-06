@@ -48,6 +48,19 @@ const slots = [
 
 ];
 
+// Helper function to get image URL - handles both Cloudinary and local
+const getImageUrl = (image) => {
+  if (!image) return "/image-wm.png";
+  
+  // If it's already a full URL (Cloudinary), return it
+  if (image.startsWith('http://') || image.startsWith('https://')) {
+    return image;
+  }
+  
+  // Otherwise, it's a local filename - use /uploads path
+  return `${API}/uploads/${image}`;
+};
+
 
 useEffect(() => {
 
@@ -158,6 +171,13 @@ setBookingLoading(false);
 };
 
 
+// Get all images - handle both Cloudinary URLs and local filenames
+const getAllImages = () => {
+  if (!turf?.images || turf.images.length === 0) return [];
+  return turf.images.map(img => getImageUrl(img));
+};
+
+
 if (loading)
 
 return (
@@ -167,6 +187,7 @@ return (
 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
 
 </div>
+
 
 );
 
@@ -200,6 +221,8 @@ Go Home
 );
 
 
+const images = getAllImages();
+
 return (
 
 <div className="min-h-screen bg-gray-900 text-white p-6">
@@ -211,8 +234,7 @@ return (
 
 
 {/* Image Swiper */}
-
-{turf.images?.length > 0 ? (
+{images.length > 0 ? (
 
 <Swiper 
 
@@ -224,13 +246,13 @@ className="h-64 md:h-96 rounded-xl mb-6"
 
 >
 
-{turf.images.map((img, i) => (
+{images.map((img, i) => (
 
 <SwiperSlide key={i}>
 
 <img 
 
-src={`${API}/uploads/${img}`} 
+src={img} 
 
 alt={`${turf.name} ${i + 1}`}
 
@@ -357,6 +379,7 @@ bookingLoading || !selectedSlot
 </div>
 
 );
+
 
 };
 

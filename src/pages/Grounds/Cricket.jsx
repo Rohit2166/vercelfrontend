@@ -14,6 +14,18 @@ const Cricket = () => {
 
   const [error, setError] = useState(null);
 
+  // Helper function to get image URL - handles both Cloudinary and local
+  const getImageUrl = (image) => {
+    if (!image) return "/image-wm.png";
+    
+    // If it's already a full URL (Cloudinary), return it
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+      return image;
+    }
+    
+    // Otherwise, it's a local filename - use /uploads path
+    return `${API}/uploads/${image}`;
+  };
 
   useEffect(() => {
 
@@ -188,15 +200,7 @@ const Cricket = () => {
 
             <img
 
-              src={
-
-                ground.image
-
-                ? `${API}/uploads/${ground.image}`
-
-                : '/image-wm.png'
-
-              }
+              src={getImageUrl(ground.image)}
 
               className='h-48 w-full object-cover'
 
