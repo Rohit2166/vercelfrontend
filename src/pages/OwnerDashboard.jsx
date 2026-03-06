@@ -410,30 +410,45 @@ const OwnerDashboard = () => {
 
       setLoading(true);
 
-const res = await fetch(`${API}/api/grounds/owner`, {
+      const apiUrl = API.replace(/\/$/, '');
+      const url = `${apiUrl}/api/grounds/owner`;
+      
+      console.log("Fetching from:", url);
+      console.log("Token exists:", !!token);
+
+      const res = await fetch(url, {
 
         method: "GET",
 
         headers: {
 
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
 
         },
 
       });
 
-      const data = await res.json();
+      console.log("Response status:", res.status);
 
-      if (!res.ok)
-        throw new Error(data.message);
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.log("Error response:", errorText);
+        throw new Error(`Server returned ${res.status}: ${errorText}`);
+      }
+
+      const data = await res.json();
+      
+      console.log("Response data:", data);
 
       setTurfs(data);
 
     }
 
     catch (err) {
-
-      setError(err.message);
+      
+      console.error("Fetch turfs error:", err);
+      setError(err.message || "Failed to connect to server. Please check if backend is running.");
 
     }
 

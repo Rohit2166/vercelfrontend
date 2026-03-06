@@ -72,14 +72,18 @@ function AddTurf() {
         formData.append("images", img);
       });
 
-      console.log("Submitting to:", `${API}/api/grounds/add`);
+      const apiUrl = API.replace(/\/$/, '');
+      const url = `${apiUrl}/api/grounds/add`;
+      
+      console.log("Submitting to:", url);
 
-      const res = await fetch(`${API}/api/grounds/add`, {
+      const res = await fetch(url, {
 
         method: "POST",
 
         headers: {
-          Authorization: `Bearer ${token}`
+          "Authorization": `Bearer ${token}`
+          // Don't set Content-Type for FormData - browser will set it with boundary
         },
 
         body: formData
@@ -88,30 +92,26 @@ function AddTurf() {
 
       console.log("Response status:", res.status);
 
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.log("Error response:", errorText);
+        throw new Error(errorText || "Failed to add turf");
+      }
+
       const data = await res.json();
 
       console.log("Response data:", data);
 
-
-      if (!res.ok) {
-
-        throw new Error(data.message || "Failed to add turf");
-
-      }
-
-
       alert("Turf Added Successfully");
 
-
       navigate("/owner/dashboard");
-
 
     }
 
     catch (err) {
 
       console.error("Add turf error:", err);
-      setError(err.message);
+      setError(err.message || "Failed to add turf. Please try again.");
 
     }
 
