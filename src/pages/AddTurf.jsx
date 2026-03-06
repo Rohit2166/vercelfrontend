@@ -72,6 +72,8 @@ function AddTurf() {
         formData.append("images", img);
       });
 
+      console.log("Submitting to:", `${API}/api/grounds/add`);
+
       const res = await fetch(`${API}/api/grounds/add`, {
 
         method: "POST",
@@ -84,8 +86,11 @@ function AddTurf() {
 
       });
 
+      console.log("Response status:", res.status);
 
       const data = await res.json();
+
+      console.log("Response data:", data);
 
 
       if (!res.ok) {
@@ -105,6 +110,7 @@ function AddTurf() {
 
     catch (err) {
 
+      console.error("Add turf error:", err);
       setError(err.message);
 
     }

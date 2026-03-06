@@ -372,6 +372,18 @@ const OwnerDashboard = () => {
 
   const [error, setError] = useState("");
 
+  // Helper function to get image URL - handles both Cloudinary and local
+  const getImageUrl = (image) => {
+    if (!image) return "/image-wm.png";
+    
+    // If it's already a full URL (Cloudinary), return it
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+      return image;
+    }
+    
+    // Otherwise, it's a local filename - use /uploads path
+    return `${API}/uploads/${image}`;
+  };
 
 
   // ✅ Fetch turfs when page loads
@@ -583,11 +595,13 @@ const res = await fetch(`${API}/api/grounds/owner`, {
 
                     src={
                       turf.images?.length
-                        ? `${API}/uploads/${turf.images[0]}`
-                        : "/no-image.png"
+                        ? getImageUrl(turf.images[0])
+                        : "/image-wm.png"
                     }
 
                     className="h-40 w-full object-cover rounded"
+                    
+                    onError={(e) => e.target.src = '/image-wm.png'}
 
                   />
 

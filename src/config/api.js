@@ -17,8 +17,8 @@ const getApiUrl = () => {
     return "http://localhost:5000";
   }
 
-  // 3️⃣ Production fallback (your backend URL)
-  const productionAPI = "https://backendvercel-nh0ww5yun-rohit2166s-projects.vercel.app";
+  // 3️⃣ Production fallback - use your deployed backend URL
+  const productionAPI = "https://backendvercel-puce.vercel.app";
 
   console.log("Using Production API:", productionAPI);
 
