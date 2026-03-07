@@ -43,9 +43,20 @@ function AddTurf() {
 
 
   const handleImage = (e) => {
-
-    setImages(Array.from(e.target.files));
-
+    const files = Array.from(e.target.files);
+    // Convert to base64 immediately
+    const promises = files.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    });
+    
+    Promise.all(promises).then(base64Images => {
+      setImages(base64Images);
+    });
   };
 
 
@@ -59,18 +70,16 @@ function AddTurf() {
 
       setLoading(true);
 
-      const formData = new FormData();
-
-      formData.append("name", form.name);
-      formData.append("location", form.location);
-      formData.append("address", form.address);
-      formData.append("sport", form.sport);
-      formData.append("price", form.price);
-      formData.append("description", form.description);
-
-      images.forEach(img => {
-        formData.append("images", img);
-      });
+      // Send as JSON with base64 images
+      const payload = {
+        name: form.name,
+        location: form.location,
+        address: form.address,
+        sport: form.sport,
+        price: form.price,
+        description: form.description,
+        images: images
+      };
 
       const apiUrl = API.replace(/\/$/, '');
       const url = `${apiUrl}/api/grounds/add`;
@@ -81,13 +90,11 @@ function AddTurf() {
 
         method: "POST",
         mode: "cors",
-
         headers: {
+          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
-          // Don't set Content-Type for FormData - browser will set it with boundary
         },
-
-        body: formData
+        body: JSON.stringify(payload)
 
       });
 
