@@ -80,6 +80,7 @@ function AddTurf() {
       const res = await fetch(url, {
 
         method: "POST",
+        mode: "cors",
 
         headers: {
           "Authorization": `Bearer ${token}`
