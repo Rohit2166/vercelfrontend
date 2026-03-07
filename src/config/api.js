@@ -1,12 +1,14 @@
 // API configuration for CRICBOX frontend
-// Use localhost for local development
-// Use deployed URL for production
+// Automatically detect if running locally or in production
 
-// For local development, use http://localhost:5000
-// For production, use your Vercel backend URL
-export const API = "https://backendvercel-puce.vercel.app";
+// Check if we're in development mode (localhost)
+const isLocalhost = window && window.location && window.location.hostname === 'localhost';
 
-console.log("API URL configured as:", API);
+// Use localhost for local development, Vercel URL for production
+export const API = isLocalhost ? "http://localhost:5000" : "https://backendvercel-puce.vercel.app";
+
+console.log("Running in:", isLocalhost ? "development" : "production");
+console.log("API URL:", API);
 
 export default API;
 
