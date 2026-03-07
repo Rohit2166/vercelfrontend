@@ -1,9 +1,10 @@
 // API configuration for CRICBOX frontend
-// This is the direct backend URL - change this to your deployed backend
+// Use localhost for local development
+// Use deployed URL for production
 
-// For production, use your Vercel backend URL
 // For local development, use http://localhost:5000
-export const API = "https://backendvercel-puce.vercel.app";
+// For production, use your Vercel backend URL
+export const API = "http://localhost:5000";
 
 console.log("API URL configured as:", API);
 
