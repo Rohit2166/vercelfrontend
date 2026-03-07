@@ -372,9 +372,14 @@ const OwnerDashboard = () => {
 
   const [error, setError] = useState("");
 
-  // Helper function to get image URL - handles both Cloudinary and local
+  // Helper function to get image URL - handles Cloudinary, local, and base64
   const getImageUrl = (image) => {
     if (!image) return "/image-wm.png";
+    
+    // If it's a base64 image, return it directly
+    if (image.startsWith('data:')) {
+      return image;
+    }
     
     // If it's already a full URL (Cloudinary), return it
     if (image.startsWith('http://') || image.startsWith('https://')) {

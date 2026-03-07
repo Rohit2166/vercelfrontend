@@ -44,11 +44,46 @@ function AddTurf() {
 
   const handleImage = (e) => {
     const files = Array.from(e.target.files);
-    // Convert to base64 immediately
+    
+    // Resize and convert to base64
     const promises = files.map(file => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            // Resize to max 800px width/height
+            const maxSize = 800;
+            let width = img.width;
+            let height = img.height;
+            
+            // Calculate new dimensions
+            if (width > height) {
+              if (width > maxSize) {
+                height = (height * maxSize) / width;
+                width = maxSize;
+              }
+            } else {
+              if (height > maxSize) {
+                width = (width * maxSize) / height;
+                height = maxSize;
+              }
+            }
+            
+            // Create canvas and resize
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Compress to JPEG with 0.7 quality
+            const resizedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+            resolve(resizedBase64);
+          };
+          img.onerror = reject;
+          img.src = event.target.result;
+        };
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
