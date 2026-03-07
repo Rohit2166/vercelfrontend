@@ -264,23 +264,33 @@ const EditTurf = () => {
             <div>
               <label className="block text-lg font-semibold mb-2">Current Images ({currentImages.length})</label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                {currentImages.map((img, index) => (
-                  <div key={index} className="relative">
-                    <img 
-                      src={`${API}/uploads/${img}`}
-                      alt={`Current ${index + 1}`}
-                      className="w-full h-32 object-cover rounded"
-                      onError={(e) => { e.target.src = '/image-wm.png'; }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeCurrentImage(index)}
-                      className="absolute top-1 right-1 bg-red-500 p-1 rounded-full hover:bg-red-600"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
+                {currentImages.map((img, index) => {
+                  // Helper to get the correct image URL
+                  const getImageUrl = (image) => {
+                    if (!image) return "/image-wm.png";
+                    if (image.startsWith('http://') || image.startsWith('https://')) {
+                      return image;
+                    }
+                    return `${API}/uploads/${image}`;
+                  };
+                  return (
+                    <div key={index} className="relative">
+                      <img 
+                        src={getImageUrl(img)}
+                        alt={`Current ${index + 1}`}
+                        className="w-full h-32 object-cover rounded"
+                        onError={(e) => { e.target.src = '/image-wm.png'; }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeCurrentImage(index)}
+                        className="absolute top-1 right-1 bg-red-500 p-1 rounded-full hover:bg-red-600"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
