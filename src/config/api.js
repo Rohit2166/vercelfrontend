@@ -4,7 +4,7 @@
 
 // For local development, use http://localhost:5000
 // For production, use your Vercel backend URL
-export const API = "http://localhost:5000";
+export const API = "https://backendvercel-puce.vercel.app";
 
 console.log("API URL configured as:", API);
 
