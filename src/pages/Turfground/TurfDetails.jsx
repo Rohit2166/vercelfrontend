@@ -49,7 +49,7 @@ const slots = [
 ];
 
 // Helper function to get optimized image URL using Cloudinary transformations
-const getOptimizedImageUrl = (image, width = 800, height = 600) => {
+const getOptimizedImageUrl = (image, width = 1200, height = 900) => {
   if (!image) return "/image-wm.png";
   
   // If it's a base64 image, return it directly
@@ -63,11 +63,11 @@ const getOptimizedImageUrl = (image, width = 800, height = 600) => {
     if (image.includes('cloudinary')) {
       // Add Cloudinary transformation parameters for optimization
       // f_auto: automatic format (webp, avif, etc.)
-      // q_auto: automatic quality compression
+      // q_auto: automatic quality compression - using quality:80 for better quality
       // w: width, h: height
       // c_fill: crop to fill dimensions
       const separator = image.includes('?') ? '&' : '?';
-      return `${image}${separator}f_auto,q_auto,w_${width},h_${height},c_fill`;
+      return `${image}${separator}f_auto,q_auto:good,w_${width},h_${height},c_fill`;
     }
     return image;
   }

@@ -47,15 +47,15 @@ function AddTurf() {
     
     if (files.length === 0) return;
     
-    // Resize and convert to base64 with aggressive compression
+    // Resize and convert to base64 with better quality
     const promises = files.map(file => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (event) => {
           const img = new Image();
           img.onload = () => {
-            // Resize to max 400px - much smaller for faster upload
-            const maxSize = 400;
+            // Resize to max 800px - better quality
+            const maxSize = 800;
             let width = img.width;
             let height = img.height;
             
@@ -79,8 +79,8 @@ function AddTurf() {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
             
-            // Compress to JPEG with 0.5 quality - 50% quality for smaller size
-            const resizedBase64 = canvas.toDataURL('image/jpeg', 0.5);
+            // Compress to JPEG with 0.85 quality - much better quality
+            const resizedBase64 = canvas.toDataURL('image/jpeg', 0.85);
             resolve(resizedBase64);
           };
           img.onerror = reject;

@@ -15,7 +15,7 @@ const Cricket = () => {
   const [error, setError] = useState(null);
 
   // Helper function to get optimized image URL using Cloudinary transformations
-  const getOptimizedImageUrl = (image, width = 400, height = 300) => {
+  const getOptimizedImageUrl = (image, width = 600, height = 450) => {
     if (!image) return "/image-wm.png";
     
     // If it's a base64 image, return it directly
@@ -29,9 +29,9 @@ const Cricket = () => {
       if (image.includes('cloudinary')) {
         // Add Cloudinary transformation parameters for optimization
         // f_auto: automatic format (webp, avif, etc.)
-        // q_auto: automatic quality compression
+        // q_auto: good quality compression
         const separator = image.includes('?') ? '&' : '?';
-        return `${image}${separator}f_auto,q_auto,w_${width},h_${height},c_fill`;
+        return `${image}${separator}f_auto,q_auto:good,w_${width},h_${height},c_fill`;
       }
       return image;
     }
