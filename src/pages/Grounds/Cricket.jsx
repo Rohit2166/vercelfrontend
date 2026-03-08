@@ -66,6 +66,9 @@ const Cricket = () => {
         if (!response.ok) throw new Error('Failed to fetch');
 
         const data = await response.json();
+        
+        console.log("Cricket grounds fetched:", data);
+        console.log("First ground images:", data[0]?.images);
 
         setGrounds(data);
 

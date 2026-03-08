@@ -87,6 +87,9 @@ const res = await fetch(`${API}/api/grounds/${id}`);
 
 const data = await res.json();
 
+console.log("Ground data received:", data);
+console.log("Images array:", data.images);
+
 setTurf(data);
 
 }
