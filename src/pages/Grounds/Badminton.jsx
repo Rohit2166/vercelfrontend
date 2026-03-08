@@ -40,9 +40,11 @@ const Badminton = () => {
 
   // Get first image from images array or fallback to image field
   const getGroundImage = (ground) => {
-    if (ground.images && ground.images.length > 0) {
+    // First check images array
+    if (ground.images && Array.isArray(ground.images) && ground.images.length > 0 && ground.images[0]) {
       return getOptimizedImageUrl(ground.images[0]);
     }
+    // Fallback to single image field
     if (ground.image) {
       return getOptimizedImageUrl(ground.image);
     }

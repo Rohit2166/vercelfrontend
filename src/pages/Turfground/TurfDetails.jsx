@@ -186,10 +186,23 @@ setBookingLoading(false);
 };
 
 
-// Get all images - handle both Cloudinary URLs and local filenames
+// Get all images - handle both images array and single image field
 const getAllImages = () => {
-  if (!turf?.images || turf.images.length === 0) return [];
-  return turf.images.map(img => getOptimizedImageUrl(img));
+  const imageList = [];
+  
+  // First check if there's an images array
+  if (turf?.images && Array.isArray(turf.images) && turf.images.length > 0) {
+    turf.images.forEach(img => {
+      if (img) imageList.push(getOptimizedImageUrl(img));
+    });
+  }
+  
+  // Fallback to single image field if no images in array
+  if (imageList.length === 0 && turf?.image) {
+    imageList.push(getOptimizedImageUrl(turf.image));
+  }
+  
+  return imageList;
 };
 
 
