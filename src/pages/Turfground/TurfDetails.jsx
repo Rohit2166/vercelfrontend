@@ -48,12 +48,27 @@ const slots = [
 
 ];
 
-// Helper function to get image URL - handles both Cloudinary and local
-const getImageUrl = (image) => {
+// Helper function to get optimized image URL using Cloudinary transformations
+const getOptimizedImageUrl = (image, width = 800, height = 600) => {
   if (!image) return "/image-wm.png";
   
-  // If it's already a full URL (Cloudinary), return it
+  // If it's a base64 image, return it directly
+  if (image.startsWith('data:')) {
+    return image;
+  }
+  
+  // If it's already a full URL (Cloudinary), add transformation parameters
   if (image.startsWith('http://') || image.startsWith('https://')) {
+    // Check if it's a Cloudinary URL
+    if (image.includes('cloudinary')) {
+      // Add Cloudinary transformation parameters for optimization
+      // f_auto: automatic format (webp, avif, etc.)
+      // q_auto: automatic quality compression
+      // w: width, h: height
+      // c_fill: crop to fill dimensions
+      const separator = image.includes('?') ? '&' : '?';
+      return `${image}${separator}f_auto,q_auto,w_${width},h_${height},c_fill`;
+    }
     return image;
   }
   
@@ -174,7 +189,7 @@ setBookingLoading(false);
 // Get all images - handle both Cloudinary URLs and local filenames
 const getAllImages = () => {
   if (!turf?.images || turf.images.length === 0) return [];
-  return turf.images.map(img => getImageUrl(img));
+  return turf.images.map(img => getOptimizedImageUrl(img));
 };
 
 

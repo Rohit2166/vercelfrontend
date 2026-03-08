@@ -14,17 +14,39 @@ const Badminton = () => {
 
   const [error, setError] = useState(null);
 
-  // Helper function to get image URL - handles both Cloudinary and local
-  const getImageUrl = (image) => {
+  // Helper function to get optimized image URL using Cloudinary transformations
+  const getOptimizedImageUrl = (image, width = 400, height = 300) => {
     if (!image) return "/badminton.png";
     
-    // If it's already a full URL (Cloudinary), return it
+    // If it's a base64 image, return it directly
+    if (image.startsWith('data:')) {
+      return image;
+    }
+    
+    // If it's already a full URL (Cloudinary), add transformation parameters
     if (image.startsWith('http://') || image.startsWith('https://')) {
+      // Check if it's a Cloudinary URL
+      if (image.includes('cloudinary')) {
+        // Add Cloudinary transformation parameters for optimization
+        const separator = image.includes('?') ? '&' : '?';
+        return `${image}${separator}f_auto,q_auto,w_${width},h_${height},c_fill`;
+      }
       return image;
     }
     
     // Otherwise, it's a local filename - use /uploads path
     return `${API}/uploads/${image}`;
+  };
+
+  // Get first image from images array or fallback to image field
+  const getGroundImage = (ground) => {
+    if (ground.images && ground.images.length > 0) {
+      return getOptimizedImageUrl(ground.images[0]);
+    }
+    if (ground.image) {
+      return getOptimizedImageUrl(ground.image);
+    }
+    return "/badminton.png";
   };
 
   useEffect(() => {
@@ -186,7 +208,7 @@ const Badminton = () => {
 
             <img
 
-              src={getImageUrl(ground.image)}
+              src={getGroundImage(ground)}
 
               className='h-48 w-full object-cover'
 
