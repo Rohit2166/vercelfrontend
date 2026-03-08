@@ -89,15 +89,63 @@ const EditTurf = () => {
   };
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData({
-      ...formData,
-      images: [...formData.images, ...files]
+    const files = Array.from(e.target.files).slice(0, 5); // Limit to 5 images
+    
+    if (files.length === 0) return;
+    
+    // Resize and convert to base64 with aggressive compression
+    const promises = files.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            // Resize to max 400px - much smaller for faster upload
+            const maxSize = 400;
+            let width = img.width;
+            let height = img.height;
+            
+            // Calculate new dimensions
+            if (width > height) {
+              if (width > maxSize) {
+                height = (height * maxSize) / width;
+                width = maxSize;
+              }
+            } else {
+              if (height > maxSize) {
+                width = (width * maxSize) / height;
+                height = maxSize;
+              }
+            }
+            
+            // Create canvas and resize
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Compress to JPEG with 0.5 quality - 50% quality for smaller size
+            const resizedBase64 = canvas.toDataURL('image/jpeg', 0.5);
+            resolve(resizedBase64);
+          };
+          img.onerror = reject;
+          img.src = event.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
     });
-
-    // Create preview URLs
-    const newPreviews = files.map(file => URL.createObjectURL(file));
-    setPreview([...preview, ...newPreviews]);
+    
+    Promise.all(promises).then(base64Images => {
+      setFormData({
+        ...formData,
+        images: [...formData.images, ...base64Images]
+      });
+      // Create preview URLs
+      const newPreviews = base64Images.map(src => src);
+      setPreview([...preview, ...newPreviews]);
+    });
   };
 
   const removeCurrentImage = (index) => {
@@ -119,25 +167,28 @@ const EditTurf = () => {
     setSubmitting(true);
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('location', formData.location);
-      formDataToSend.append('address', formData.address);
-      formDataToSend.append('sport', formData.sport);
-      formDataToSend.append('price', formData.price);
-      formDataToSend.append('description', formData.description);
-      
-      // Append only new images if any
-      formData.images.forEach(image => {
-        formDataToSend.append('images', image);
-      });
+      // Prepare all images - keep current images that weren't removed + new base64 images
+      const allImages = [...currentImages, ...formData.images];
 
-      const response = await fetch(`${API}/api/grounds/${id}`, {
+      // Send as JSON with base64 images
+      const payload = {
+        name: formData.name,
+        location: formData.location,
+        address: formData.address,
+        sport: formData.sport,
+        price: formData.price,
+        description: formData.description,
+        images: allImages
+      };
+
+      const apiUrl = API.replace(/\/$/, '');
+      const response = await fetch(`${apiUrl}/api/grounds/${id}`, {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: formDataToSend
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json();
