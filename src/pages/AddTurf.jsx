@@ -43,7 +43,7 @@ function AddTurf() {
 
 
   const handleImage = (e) => {
-    const files = Array.from(e.target.files).slice(0, 1); // Limit to 1 image
+    const files = Array.from(e.target.files).slice(0, 5); // Allow up to 5 images
     
     if (files.length === 0) return;
     
@@ -92,8 +92,13 @@ function AddTurf() {
     });
     
     Promise.all(promises).then(base64Images => {
-      setImages(base64Images);
+      setImages([...images, ...base64Images]);
     });
+  };
+
+  // Remove image from selection
+  const removeImage = (index) => {
+    setImages(images.filter((_, i) => i !== index));
   };
 
 
@@ -257,7 +262,7 @@ function AddTurf() {
           </div>
 
           <div className="mb-6">
-            <label className="block mb-2">Images</label>
+            <label className="block mb-2">Images (up to 5)</label>
             <input 
               type="file" 
               multiple 
@@ -265,6 +270,26 @@ function AddTurf() {
               accept="image/*"
               className="w-full p-3 bg-gray-700 rounded"
             />
+            {images.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {images.map((img, index) => (
+                  <div key={index} className="relative">
+                    <img 
+                      src={img} 
+                      alt={`Preview ${index + 1}`} 
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <button 
