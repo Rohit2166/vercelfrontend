@@ -24,6 +24,7 @@ import BadmintonDetails from "./pages/Turfground/BadmintonDetails";
 import BasketballDetails from "./pages/Turfground/BasketballDetails";
 import PickleballDetails from "./pages/Turfground/PickleballDetails";
 import TennisDetails from "./pages/Turfground/TennisDetails";
+import Scroll from './Scroll'
 
 
 
