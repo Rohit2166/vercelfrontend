@@ -35,6 +35,7 @@ const App = () => {
       
 
       <Navbar/>
+      <Scroll/>
       <Routes>
         
 <Route path='*' element={<Error/>}/>
