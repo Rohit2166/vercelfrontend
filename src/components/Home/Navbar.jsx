@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
 
-    <nav className="bg-gray-800 text-white shadow-md">
+    <nav className="bg-gray-800 text-white shadow-md fixed top-0 left-0 w-full z-50">
 
       <div className="max-w-7xl mx-auto px-4">
 
