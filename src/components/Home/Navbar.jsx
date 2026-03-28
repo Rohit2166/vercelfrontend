@@ -24,7 +24,7 @@ const Navbar = () => {
 
       <div className="max-w-7xl mx-auto px-4">
 
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-14">
 
 
           {/* Logo */}
@@ -110,7 +110,7 @@ const Navbar = () => {
 
             <button onClick={() => setIsOpen(!isOpen)}>
 
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
+              {isOpen ? <X size={26} /> : <Menu size={26} />}
 
             </button> 
 
